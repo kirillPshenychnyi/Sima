@@ -105,6 +105,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	RECT rt;
 	static std::unique_ptr < Game > s_game = std::make_unique< Game >("John", "Jack");
 	
+	static int x, y;
+
+	static const Point::Point * first = nullptr;
+	static const Point::Point * second = nullptr;
+	static const Point::Point * temp = nullptr;
+
+	
+	static int click = 0;
+
 	switch (message)
 	{
 	case WM_CREATE: // Сообщение приходит при создании окна
@@ -113,9 +122,40 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_PAINT:  // Перерисовать окно
 		hdc = BeginPaint(hWnd, &ps);	// Начать графический вывод
 		
-		drawPoints( hdc, s_game->getField().getPoints() );
+		if (first && second)
+			drawLine( hdc,* first, * second);
+		else 
+			drawPoints( hdc, s_game->getField().getPoints() );
 
 		EndPaint(hWnd, &ps);	// Закончить графический вывод
+		break;
+
+	case WM_LBUTTONDOWN:
+
+		x = LOWORD(lParam);
+
+		y = HIWORD(lParam);
+
+		temp = s_game->getField().onClicked( x, y );
+
+		if (!click && temp)
+		{
+			first = temp;
+
+			click++;
+
+			InvalidateRect(hWnd, NULL, FALSE);
+		}
+
+		else if ( click && temp )
+		{
+			second = temp;
+			
+			click = 0;
+
+			InvalidateRect(hWnd, NULL, FALSE);
+		}
+
 		break;
 
 	case WM_DESTROY: // Завершение работы

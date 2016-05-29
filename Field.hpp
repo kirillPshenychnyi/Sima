@@ -35,6 +35,8 @@ public:
 
 	Points getPoints() const;
 
+	const Point::Point * onClicked(int _x, int _y);
+
 /***************************************************************************/
 
 private:
@@ -53,7 +55,7 @@ private:
 
 	std::vector< Point::Point > m_points;
 
-	int m_count;
+	const int m_count;
 
 /***************************************************************************/
 };
@@ -91,6 +93,7 @@ Field::getPoints() const
 {
 	return Points(m_points.begin(), m_points.end());
 }
+
 
 /***************************************************************************/
 

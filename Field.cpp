@@ -3,16 +3,16 @@
 #include <cmath>
 #include <cassert>
 #include <iostream>
+#include "globals.hpp"
 
 /***************************************************************************/
 
 Field::Field()
+	: m_count ( rand() % 15 + 6 )
 {
 	time_t current; // рандомизируем. 
 	time(&current);
 	srand((unsigned int)current);
-
-	m_count = rand() % 15 + 6;
 
 	for (int i = 0; i < m_count; i++)
 		addPoint();
@@ -35,8 +35,6 @@ Field::addPoint()
 	{
 		double dis = distance(point, newPoint);
 
-		if (dis < 25.0)
-			addPoint();
 	}
 	m_points.push_back(newPoint);
 }
@@ -50,6 +48,26 @@ Field::distance( const Point::Point & _first, const Point::Point _second ) const
 	return sqrt(xDistance * xDistance + yDistance * yDistance);
 }
 
+/***************************************************************************/
+
+const Point::Point *
+Field::onClicked( int _x, int _y )
+{
+	Point::Point * clicked = nullptr;
+
+	for (auto & point : m_points)
+	{
+		int x = point.getX();
+		int y = point.getY();
+
+		if (_x >= x && _x <= x + Globals::diameter && _y >= y && _y <= y + Globals::diameter )
+			clicked = & point;
+	}
+
+	clicked->setStatus(Point::PointStatus::Filled);
+
+	return clicked;
+}
 
 /***************************************************************************/
 
