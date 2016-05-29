@@ -64,7 +64,8 @@ Field::onClicked( int _x, int _y )
 			clicked = & point;
 	}
 
-	clicked->setStatus(Point::PointStatus::Filled);
+	if(clicked)
+		clicked->setStatus(Point::PointStatus::Filled);
 
 	return clicked;
 }

@@ -124,8 +124,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		
 		if (first && second)
 			drawLine( hdc,* first, * second);
-		else 
-			drawPoints( hdc, s_game->getField().getPoints() );
+		
+		drawPoints( hdc, s_game->getField().getPoints() );
 
 		EndPaint(hWnd, &ps);	// Закончить графический вывод
 		break;
@@ -154,6 +154,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			click = 0;
 
 			InvalidateRect(hWnd, NULL, FALSE);
+
+			temp = first = second = nullptr;
+
 		}
 
 		break;

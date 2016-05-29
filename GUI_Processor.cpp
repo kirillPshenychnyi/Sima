@@ -18,5 +18,8 @@ drawPoints( HDC _hdc, Field::Points _points )
 
 void drawLine(HDC _hdc, const Point::Point & _first, const Point::Point & _second)
 {
-	MoveToEx(_hdc, _first.getX(), _first.getY(), NULL);
+	MoveToEx( _hdc, _first.getX() + Globals::diameter / 2, _first.getY() + Globals::diameter / 2, NULL);
+
+	LineTo( _hdc, _second.getX() + Globals::diameter / 2, _second.getY() + Globals::diameter / 2);
+
 }
