@@ -1,5 +1,8 @@
 #include "Field.hpp"
 #include <ctime>
+#include <cmath>
+#include <cassert>
+#include <iostream>
 
 /***************************************************************************/
 
@@ -9,6 +12,10 @@ Field::Field()
 	time(&current);
 	srand((unsigned int)current);
 
+	m_count = rand() % 15 + 6;
+
+	for (int i = 0; i < m_count; i++)
+		addPoint();
 }
 
 
@@ -18,31 +25,31 @@ Field::Field()
 void
 Field::addPoint() 
 {
-	int x = rand() % 250;
+	int x = rand() % 400;
 
-	int y = rand() % 100;
+	int y = rand() % 400;
 
-	if (m_points.empty())
-		m_points.insert( Point::Point(x, y) );
-	else
+	Point::Point newPoint(x, y);
+
+	for (auto point : m_points)
 	{
-		auto lastPoint = m_points.end()--;
-		
-		int lastX = lastPoint->getX();
+		double dis = distance(point, newPoint);
 
-		int lastY = lastPoint->getY();
-
-		x = lastX + (rand() % 50 - 100);
-
-		y = lastX + (rand() % 50 - 100);
-
-		Point::Point newPoint(x, y);
-
-		if (m_points.find(newPoint) != m_points.end())
+		if (dis < 25.0)
 			addPoint();
 	}
-	
+	m_points.push_back(newPoint);
+}
+
+double
+Field::distance( const Point::Point & _first, const Point::Point _second ) const
+{
+	int xDistance = _first.getX() - _second.getX();
+	int yDistance = _first.getY() - _second.getY();
+
+	return sqrt(xDistance * xDistance + yDistance * yDistance);
 }
 
 
+/***************************************************************************/
 

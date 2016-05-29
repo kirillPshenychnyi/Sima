@@ -1,6 +1,7 @@
 #include <windows.h>         // подключение библиотеки с функциями API
 #include <cassert>
 #include "Game.hpp"
+#include "GUI_Processor.hpp"
 
 // Глобальные переменные:
 HINSTANCE hInst; 	// Указатель приложения
@@ -102,7 +103,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	PAINTSTRUCT ps;
 	HDC hdc;
 	RECT rt;
-
+	static std::unique_ptr < Game > s_game = std::make_unique< Game >("John", "Jack");
+	
 	switch (message)
 	{
 	case WM_CREATE: // Сообщение приходит при создании окна
@@ -110,8 +112,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_PAINT:  // Перерисовать окно
 		hdc = BeginPaint(hWnd, &ps);	// Начать графический вывод
-		GetClientRect(hWnd, &rt); // Область окна для рисования
-		DrawText(hdc, "Привет, мир!", -1, &rt, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+		
+		drawPoints( hdc, s_game->getField().getPoints() );
+
 		EndPaint(hWnd, &ps);	// Закончить графический вывод
 		break;
 

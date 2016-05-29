@@ -3,7 +3,7 @@
 
 /***************************************************************************/
 
-#include <unordered_set>
+#include <vector>
 #include "Point.hpp"
 
 /***************************************************************************/
@@ -17,7 +17,7 @@ public:
 
 /***************************************************************************/
 
-	typedef std::unordered_set< Point::Point, Point::Hasher >::const_iterator PointIterator;
+	typedef std::vector< Point::Point >::const_iterator PointIterator;
 
 	struct Points;
 
@@ -43,13 +43,17 @@ private:
 
 	void addPoint();
 
+	double distance( const Point::Point & _first, const Point::Point _second ) const;
+
 /***************************************************************************/
 
 private:
 
 /***************************************************************************/
 
-	std::unordered_set< Point::Point, Point::Hasher > m_points;
+	std::vector< Point::Point > m_points;
+
+	int m_count;
 
 /***************************************************************************/
 };
