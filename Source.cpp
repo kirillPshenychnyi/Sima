@@ -1,6 +1,7 @@
 #include <windows.h>         // подключение библиотеки с функциями API
 #include <cassert>
 #include "Game.hpp"
+#include "GUI_Processor.hpp"
 
 // Глобальные переменные:
 HINSTANCE hInst; 	// Указатель приложения
@@ -102,6 +103,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	PAINTSTRUCT ps;
 	HDC hdc;
 	RECT rt;
+	static std::unique_ptr < Game > s_game = std::make_unique< Game >("John", "Jack");
+	
+	static int x, y;
+
+	static const Point::Point * first = nullptr;
+	static const Point::Point * second = nullptr;
+	static const Point::Point * temp = nullptr;
+
+	
+	static int click = 0;
 
 	switch (message)
 	{
@@ -110,9 +121,44 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_PAINT:  // Перерисовать окно
 		hdc = BeginPaint(hWnd, &ps);	// Начать графический вывод
-		GetClientRect(hWnd, &rt); // Область окна для рисования
-		DrawText(hdc, "Привет, мир!", -1, &rt, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+		
+		if (first && second)
+			drawLine( hdc,* first, * second);
+		
+		drawPoints( hdc, s_game->getField().getPoints() );
+
 		EndPaint(hWnd, &ps);	// Закончить графический вывод
+		break;
+
+	case WM_LBUTTONDOWN:
+
+		x = LOWORD(lParam);
+
+		y = HIWORD(lParam);
+
+		temp = s_game->getField().onClicked( x, y );
+
+		if (!click && temp)
+		{
+			first = temp;
+
+			click++;
+
+			InvalidateRect(hWnd, NULL, FALSE);
+		}
+
+		else if ( click && temp )
+		{
+			second = temp;
+			
+			click = 0;
+
+			InvalidateRect(hWnd, NULL, FALSE);
+
+			temp = first = second = nullptr;
+
+		}
+
 		break;
 
 	case WM_DESTROY: // Завершение работы

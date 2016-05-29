@@ -1,6 +1,8 @@
 #ifndef __POINT_HPP__
 #define __POINT_HPP__
 
+#include "PointStatus.hpp"
+
 namespace Point
 {
 
@@ -15,17 +17,25 @@ public:
 
 	Point(int _x, int _y);
 
+	Point();
+
 	int getX() const;
 
 	int getY() const;
 
+	PointStatus getStatus() const;
+
 	bool operator == (const Point & _point) const;
+
+	void setStatus(PointStatus _status); 
 
 /***************************************************************************/
 
 	private:
 
 /***************************************************************************/
+
+	PointStatus m_status;
 
 	const int m_x;
 
@@ -49,6 +59,20 @@ inline int
 Point::getY() const
 {
 	return m_y;
+}
+
+inline PointStatus Point::getStatus() const
+{
+	return m_status;
+}
+
+
+/***************************************************************************/
+
+inline void 
+Point::setStatus(PointStatus _status)
+{
+	m_status = _status;
 }
 
 

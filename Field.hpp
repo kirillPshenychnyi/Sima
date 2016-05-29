@@ -3,7 +3,7 @@
 
 /***************************************************************************/
 
-#include <unordered_set>
+#include <vector>
 #include "Point.hpp"
 
 /***************************************************************************/
@@ -17,7 +17,7 @@ public:
 
 /***************************************************************************/
 
-	typedef std::unordered_set< Point::Point, Point::Hasher >::const_iterator PointIterator;
+	typedef std::vector< Point::Point >::const_iterator PointIterator;
 
 	struct Points;
 
@@ -35,6 +35,8 @@ public:
 
 	Points getPoints() const;
 
+	const Point::Point * onClicked(int _x, int _y);
+
 /***************************************************************************/
 
 private:
@@ -43,13 +45,17 @@ private:
 
 	void addPoint();
 
+	double distance( const Point::Point & _first, const Point::Point _second ) const;
+
 /***************************************************************************/
 
 private:
 
 /***************************************************************************/
 
-	std::unordered_set< Point::Point, Point::Hasher > m_points;
+	std::vector< Point::Point > m_points;
+
+	const int m_count;
 
 /***************************************************************************/
 };
@@ -87,6 +93,7 @@ Field::getPoints() const
 {
 	return Points(m_points.begin(), m_points.end());
 }
+
 
 /***************************************************************************/
 
