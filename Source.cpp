@@ -103,8 +103,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	PAINTSTRUCT ps;
 	HDC hdc;
 	RECT rt;
-	static std::unique_ptr < Game > s_game = std::make_unique< Game >("John", "Jack");
-	
+	static std::unique_ptr < Game > s_pGame = std::make_unique< Game >("John", "Jack");
+	static std::unique_ptr < GUIProcessor > s_pProcessor = std::make_unique< GUIProcessor >();
+
 	static int x, y;
 
 	static const Point::Point * first = nullptr;
@@ -123,9 +124,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		hdc = BeginPaint(hWnd, &ps);	// Начать графический вывод
 		
 		if (first && second)
-			drawLine( hdc,* first, * second);
-		
-		drawPoints( hdc, s_game->getField().getPoints() );
+		{
+			s_pProcessor->drawLine(hdc, *first, *second);
+
+			first = second = nullptr;
+		}
+
+		s_pProcessor->drawPoints( hdc, s_pGame->getField().getPoints() );
 
 		EndPaint(hWnd, &ps);	// Закончить графический вывод
 		break;
@@ -136,7 +141,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		y = HIWORD(lParam);
 
-		temp = s_game->getField().onClicked( x, y );
+		temp = s_pGame->getField().onClicked( x, y );
 
 		if (!click && temp)
 		{
@@ -154,8 +159,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			click = 0;
 
 			InvalidateRect(hWnd, NULL, FALSE);
-
-			temp = first = second = nullptr;
 
 		}
 

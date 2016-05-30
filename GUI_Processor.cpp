@@ -1,25 +1,54 @@
 #include "GUI_Processor.hpp"
 #include "globals.hpp"
 
-void
-drawPoints( HDC _hdc, Field::Points _points )
+GUIProcessor::GUIProcessor()
 {
-	HBRUSH brush = CreateSolidBrush(RGB(150, 166, 255));
+	m_brush = CreateSolidBrush(RGB(150, 166, 255));
 
+	m_first = CreatePen(PS_SOLID, 1, RGB(150, 166, 255));
+
+	m_second = CreatePen(PS_SOLID, 1, RGB(220, 135, 120));
+
+	m_step = true;
+
+}
+
+GUIProcessor::~GUIProcessor()
+{
+	DeleteObject(m_brush);
+	DeleteObject(m_first);
+	DeleteObject(m_second);
+}
+
+
+void
+GUIProcessor::drawPoints( HDC _hdc, Field::Points _points )
+{
 	for (auto pointIt : _points)
 	{
 		if (pointIt.getStatus() == Point::PointStatus::Filled)
-			SelectObject( _hdc ,brush);
+			SelectObject( _hdc, m_brush);
 		Ellipse(_hdc, pointIt.getX(), pointIt.getY(), pointIt.getX() + Globals::diameter, pointIt.getY() + Globals::diameter);
 		
 		SelectObject(_hdc, GetStockObject(NULL_BRUSH));
 	}
 }
 
-void drawLine(HDC _hdc, const Point::Point & _first, const Point::Point & _second)
+void 
+GUIProcessor::drawLine(HDC _hdc, const Point::Point & _first, const Point::Point & _second)
 {
+	if (m_step)
+		SelectObject(_hdc, m_first);
+	else
+		SelectObject(_hdc, m_second);
+
+	m_step = m_step ? false : true;
+
 	MoveToEx( _hdc, _first.getX() + Globals::diameter / 2, _first.getY() + Globals::diameter / 2, NULL);
 
 	LineTo( _hdc, _second.getX() + Globals::diameter / 2, _second.getY() + Globals::diameter / 2);
 
+	SelectObject(_hdc, GetStockObject(BLACK_PEN));
+
 }
+

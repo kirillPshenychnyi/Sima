@@ -4,8 +4,45 @@
 #include <windows.h>
 #include "Field.hpp"
 
-void drawPoints( HDC _hdc, Field::Points _points  );
+class GUIProcessor
+{
 
-void drawLine( HDC _hdc, const Point::Point & _first, const Point::Point & _second);
+/***************************************************************************/
+
+public:
+
+/***************************************************************************/
+
+	GUIProcessor();
+
+	GUIProcessor( const GUIProcessor & ) = delete;
+
+	GUIProcessor operator = ( const GUIProcessor &) = delete;
+
+	~GUIProcessor();
+
+	void drawPoints(HDC _hdc, Field::Points _points);
+
+	void drawLine(HDC _hdc, const Point::Point & _first, const Point::Point & _second);
+
+/***************************************************************************/
+
+private:
+
+/***************************************************************************/
+
+	HPEN m_first;
+
+	HPEN m_second;
+
+	HBRUSH m_brush;
+
+	bool m_step;
+
+/***************************************************************************/
+
+};
+
+/***************************************************************************/
 
 #endif // !__GUI__PROCCESOR_HPP__
