@@ -2,6 +2,7 @@
 #include <cassert>
 #include "Game.hpp"
 #include "GUI_Processor.hpp"
+#include "Point.hpp"
 
 // Глобальные переменные:
 HINSTANCE hInst; 	// Указатель приложения
@@ -30,8 +31,6 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 	{
 		return FALSE;
 	}
-
-	Game game("j", "k");
 
 	// Цикл обработки сообщений
 	while (GetMessage(&msg, NULL, 0, 0))
@@ -110,7 +109,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static  Point::Point * first = nullptr;
 	static  Point::Point * second = nullptr;
 	static  Point::Point * temp = nullptr;
-
+	std::string winner;
 	static int click = 0;
 
 	switch (message)
@@ -127,6 +126,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		
 			if (connected)
 				s_pGame->addPoint( * first);
+
+			winner = s_pGame->getWinner();
 
 			first = second = nullptr;
 		}

@@ -34,6 +34,8 @@ public:
 
 	Field & getField() const;
 
+	std::string getWinner() const;
+
 /***************************************************************************/
 
 private:

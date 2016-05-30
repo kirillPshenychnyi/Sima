@@ -8,22 +8,7 @@ Point::Point( int _x, int _y ):
 		m_x( _x )
 	,	m_y( _y )
 	,	m_status( PointStatus::Empty )
-	,	m_connected(nullptr)
 {}
-
-/***************************************************************************/
-
-void 
-Point::connect(Point * _destination)
-{
-	m_connected = _destination;
-}
-
-const Point * 
-Point::getDestination() const
-{
-	return m_connected;
-}
 
 /***************************************************************************/
 
@@ -33,10 +18,12 @@ Point::operator==( const Point & _point ) const
 	return m_x == _point.m_x && m_y == _point.m_y;
 }
 
-bool 
-Point::operator!=(const Point & _point) const
+/***************************************************************************/
+
+void
+Point::addConnection(const Point & _point)
 {
-	return !( *this == _point );
+	m_connections.insert( & _point);
 }
 
 

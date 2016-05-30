@@ -2,6 +2,7 @@
 #define __POINT_HPP__
 
 #include "PointStatus.hpp"
+#include <unordered_set>
 
 namespace Point
 {
@@ -23,15 +24,13 @@ public:
 
 	PointStatus getStatus() const;
 
-	void connect(Point * _destination);
-
-	const Point * getDestination() const;
-
 	bool operator == (const Point & _point) const;
 
-	bool operator != (const Point & _point) const;
-
 	void setStatus(PointStatus _status); 
+
+	void addConnection( const Point & _point );
+
+	bool hasConnection( const Point & _point ) const;
 
 /***************************************************************************/
 
@@ -45,7 +44,7 @@ private:
 
 	const int m_y;
 
-	Point * m_connected;
+	std::unordered_set < const Point * > m_connections;
 
 /***************************************************************************/
 
@@ -84,8 +83,13 @@ Point::setStatus(PointStatus _status)
 
 /***************************************************************************/
 
-}	// namespace Point
+inline bool
+Point::hasConnection(const Point & _point) const
+{
+	return m_connections.find(&_point) != m_connections.end();
+}
 
 /***************************************************************************/
+} // namespace Point
 
 #endif // __POINT_HPP__

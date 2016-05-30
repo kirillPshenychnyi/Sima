@@ -38,8 +38,8 @@ bool
 GUIProcessor::drawLine(HDC _hdc, Point::Point & _first, Point::Point & _second)
 {
 	if (_first == _second
-		|| _first.getDestination() == &_second
-		|| &_first == _second.getDestination())
+		|| _first.hasConnection( _second )
+		|| _second.hasConnection( _first ) )
 	{
 		_first.setStatus(Point::PointStatus::Empty);
 		_second.setStatus(Point::PointStatus::Empty);
@@ -49,7 +49,7 @@ GUIProcessor::drawLine(HDC _hdc, Point::Point & _first, Point::Point & _second)
 
 	m_step ? SelectObject(_hdc, m_first) : SelectObject(_hdc, m_second);
 
-	_first.connect( & _second);
+	_first.addConnection( _second);
 
 	m_step = m_step ? false : true;
 
