@@ -17,21 +17,25 @@ public:
 
 	Point(int _x, int _y);
 
-	Point();
-
 	int getX() const;
 
 	int getY() const;
 
 	PointStatus getStatus() const;
 
+	void connect(Point * _destination);
+
+	const Point * getDestination() const;
+
 	bool operator == (const Point & _point) const;
+
+	bool operator != (const Point & _point) const;
 
 	void setStatus(PointStatus _status); 
 
 /***************************************************************************/
 
-	private:
+private:
 
 /***************************************************************************/
 
@@ -40,6 +44,8 @@ public:
 	const int m_x;
 
 	const int m_y;
+
+	Point * m_connected;
 
 /***************************************************************************/
 
@@ -75,25 +81,6 @@ Point::setStatus(PointStatus _status)
 	m_status = _status;
 }
 
-
-/***************************************************************************/
-
-struct Hasher
-{
-	size_t hash(int _value) const
-	{
-		_value = ((_value >> 16) ^ _value) * 0x45d9f3b;
-		_value = ((_value >> 16) ^ _value) * 0x45d9f3b;
-		_value = ((_value >> 16) ^ _value);
-		return _value;
-	}
-
-	size_t operator() (const Point & _point) const
-	{
-		return hash(_point.getX()) + hash(_point.getY());
-	}
-
-}; // struct Hasher
 
 /***************************************************************************/
 

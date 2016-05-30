@@ -21,9 +21,9 @@ public:
 
 	~GUIProcessor();
 
-	void drawPoints(HDC _hdc, Field::Points _points);
+	void drawPoints(HDC _hdc, Field::Points _points) const ;
 
-	void drawLine(HDC _hdc, const Point::Point & _first, const Point::Point & _second);
+	bool drawLine(HDC _hdc, Point::Point & _first, Point::Point & _second);
 
 /***************************************************************************/
 

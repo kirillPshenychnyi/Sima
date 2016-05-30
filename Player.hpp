@@ -5,7 +5,7 @@
 
 #include "Point.hpp"
 #include <unordered_set>
-#include <string>
+#include <vector>
 
 /***************************************************************************/
 
@@ -30,8 +30,6 @@ public:
 
 	const std::string & getName() const;
 
-	bool hasPoint(const Point::Point & _point) const;
-
 /***************************************************************************/
 
 private:
@@ -40,7 +38,7 @@ private:
 
 	const std::string m_name;
 
-	std::unordered_set< Point::Point, Point::Hasher > m_points;
+	std::vector< Point::Point > m_points;
 
 /***************************************************************************/
 
@@ -54,11 +52,6 @@ Player::getName() const
 	return m_name;
 }
 
-inline bool 
-Player::hasPoint(const Point::Point & _point) const
-{
-	return m_points.find(_point) != m_points.end();
-}
 
 /***************************************************************************/
 

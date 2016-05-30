@@ -50,7 +50,7 @@ Field::distance( const Point::Point & _first, const Point::Point _second ) const
 
 /***************************************************************************/
 
-const Point::Point *
+Point::Point *
 Field::onClicked( int _x, int _y )
 {
 	Point::Point * clicked = nullptr;

@@ -102,17 +102,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	PAINTSTRUCT ps;
 	HDC hdc;
-	RECT rt;
 	static std::unique_ptr < Game > s_pGame = std::make_unique< Game >("John", "Jack");
 	static std::unique_ptr < GUIProcessor > s_pProcessor = std::make_unique< GUIProcessor >();
 
 	static int x, y;
 
-	static const Point::Point * first = nullptr;
-	static const Point::Point * second = nullptr;
-	static const Point::Point * temp = nullptr;
+	static  Point::Point * first = nullptr;
+	static  Point::Point * second = nullptr;
+	static  Point::Point * temp = nullptr;
 
-	
 	static int click = 0;
 
 	switch (message)
@@ -123,9 +121,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_PAINT:  // Перерисовать окно
 		hdc = BeginPaint(hWnd, &ps);	// Начать графический вывод
 		
-		if (first && second)
+		if ( first && second)
 		{
-			s_pProcessor->drawLine(hdc, *first, *second);
+			bool connected = s_pProcessor->drawLine(hdc, *first, *second);
+		
+			if (connected)
+				s_pGame->addPoint( * first);
 
 			first = second = nullptr;
 		}

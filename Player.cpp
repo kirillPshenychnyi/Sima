@@ -23,7 +23,7 @@ Player::isTriangle() const
 void 
 Player::addPoint( const Point::Point & _point )
 {
-	m_points.insert( _point );
+	m_points.push_back( _point );
 }
 
 

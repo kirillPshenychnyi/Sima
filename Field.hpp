@@ -35,7 +35,7 @@ public:
 
 	Points getPoints() const;
 
-	const Point::Point * onClicked(int _x, int _y);
+	Point::Point * onClicked(int _x, int _y);
 
 /***************************************************************************/
 

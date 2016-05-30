@@ -30,6 +30,8 @@ public:
 
 /***************************************************************************/
 
+	void addPoint(const Point::Point & _point);
+
 	Field & getField() const;
 
 /***************************************************************************/
@@ -38,13 +40,13 @@ private:
 
 /***************************************************************************/
 
-	std::vector < Point::Point > m_points;
-
 	std::unique_ptr < Player > m_first;
 
 	std::unique_ptr < Player > m_second;
 
 	std::unique_ptr< Field > m_field;
+
+	bool m_step;
 
 /***************************************************************************/
 
@@ -52,7 +54,7 @@ private:
 
 /***************************************************************************/
 
-inline Field & 
+inline Field &
 Game::getField() const
 {
 	return * m_field;
