@@ -34,7 +34,9 @@ public:
 
 	Field & getField() const;
 
-	std::string getWinner() const;
+	std::string getWinner();
+
+	bool isOver() const;
 
 /***************************************************************************/
 
@@ -50,6 +52,8 @@ private:
 
 	bool m_step;
 
+	bool m_isOver;
+
 /***************************************************************************/
 
 }; // class Game
@@ -60,6 +64,14 @@ inline Field &
 Game::getField() const
 {
 	return * m_field;
+}
+
+/***************************************************************************/
+
+inline bool 
+Game::isOver() const
+{
+	return m_isOver;
 }
 
 /***************************************************************************/

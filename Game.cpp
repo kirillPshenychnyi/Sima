@@ -1,4 +1,5 @@
 #include "Game.hpp"
+#include "resource.h"
 
 Game::Game(const std::string & _first, const std::string & _second)
 {
@@ -9,6 +10,8 @@ Game::Game(const std::string & _first, const std::string & _second)
 	m_field = std::make_unique< Field >();	
 
 	m_step = true;
+
+	m_isOver = false;
 }
 
 
@@ -28,17 +31,20 @@ Game::addPoint(const Point::Point & _point)
 /***************************************************************************/
 
 std::string 
-Game::getWinner() const
+Game::getWinner()
 {
-	if ( m_first->isTriangle() )
-		return m_second->getName();
-	
+	std::string winner = "";
+
+	if (m_first->isTriangle())
+		winner = m_second->getName();
+
 	else if ( m_second->isTriangle() )
-		return m_first->getName();
+		winner = m_first->getName();
+	
+	if ( !winner.empty() )
+		m_isOver = true;
 
-	else 
-		return "";
-
+	return winner;
 }
 
 /***************************************************************************/

@@ -35,6 +35,8 @@ Field::addPoint()
 	{
 		double dis = distance(point, newPoint);
 
+		if ( dis < 10.0 )
+			addPoint();
 	}
 	m_points.push_back(newPoint);
 }

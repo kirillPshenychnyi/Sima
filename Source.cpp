@@ -3,6 +3,7 @@
 #include "Game.hpp"
 #include "GUI_Processor.hpp"
 #include "Point.hpp"
+#include "resource.h"
 
 // √лобальные переменные:
 HINSTANCE hInst; 	// ”казатель приложени€
@@ -71,6 +72,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	HWND hWnd;
 
 	hInst = hInstance; // сохран€ет указатель приложени€ в переменной hInst
+	HMENU menu = LoadMenu(hInst, MAKEINTRESOURCE(IDR_MENU1));
 
 	hWnd = CreateWindow(szWindowClass, // им€ класса окна
 		szTitle,   // им€ приложени€
@@ -80,7 +82,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 		CW_USEDEFAULT,    // размер по ’
 		CW_USEDEFAULT,    // размер по Y
 		NULL,	// описатель родительского окна
-		NULL,       // описатель меню окна
+		menu,       // описатель меню окна
 		hInstance,  // указатель приложени€
 		NULL);     // параметры создани€.
 
@@ -101,7 +103,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	PAINTSTRUCT ps;
 	HDC hdc;
-	static std::unique_ptr < Game > s_pGame = std::make_unique< Game >("John", "Jack");
+	static std::unique_ptr < Game > s_pGame;
 	static std::unique_ptr < GUIProcessor > s_pProcessor = std::make_unique< GUIProcessor >();
 
 	static int x, y;
@@ -117,9 +119,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE: // —ообщение приходит при создании окна
 		break;
 
+/***************************************************************************/
+
 	case WM_PAINT:  // ѕерерисовать окно
 		hdc = BeginPaint(hWnd, &ps);	// Ќачать графический вывод
 		
+		if (!s_pGame)
+			break;
+		
+		if (s_pGame->isOver())
+			break;
+
 		if ( first && second)
 		{
 			bool connected = s_pProcessor->drawLine(hdc, *first, *second);
@@ -130,10 +140,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			winner = s_pGame->getWinner();
 
 			if ( !winner.empty())
-			{
 				s_pProcessor->printWinner( hWnd, winner);
-				break;
-			}
+			
 			first = second = nullptr;
 		}
 
@@ -142,7 +150,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		EndPaint(hWnd, &ps);	// «акончить графический вывод
 		break;
 
+/***************************************************************************/
+
 	case WM_LBUTTONDOWN:
+
+		if (!s_pGame)
+			break;
 
 		x = LOWORD(lParam);
 
@@ -170,6 +183,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 
 		break;
+
+/***************************************************************************/
+
+	case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+		case ID_GAME_NEWGAME:
+			if (s_pGame)
+				s_pGame.reset();
+			s_pGame = std::make_unique<Game>( "John", "Jack" ); // создаЄм новую игру 
+			InvalidateRect(hWnd, NULL, TRUE); // перерисовывем рабочую область 
+			break;
+		default:
+			break;
+		}
+		break;
+
+/***************************************************************************/
 
 	case WM_DESTROY: // «авершение работы
 		PostQuitMessage(0);
