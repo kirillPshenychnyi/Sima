@@ -44,6 +44,8 @@ public:
 
 	Connections getConnections() const;
 
+	int connectionsSize() const;
+
 /***************************************************************************/
 
 private:
@@ -91,6 +93,11 @@ inline Point::Connections
 Point::getConnections() const
 {
 	return Connections( m_connections.begin(), m_connections.end() );
+}
+
+inline int Point::connectionsSize() const
+{
+	return m_connections.size();
 }
 
 /***************************************************************************/

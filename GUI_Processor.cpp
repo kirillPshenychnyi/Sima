@@ -63,3 +63,9 @@ GUIProcessor::drawLine(HDC _hdc, Point::Point & _first, Point::Point & _second)
 
 }
 
+void 
+GUIProcessor::printWinner(HWND _hwnd, std::string const & _name)
+{
+	MessageBox( _hwnd, (Globals::winMessage + _name).c_str(), Globals::gameOver.c_str(), MB_OK  );
+}
+

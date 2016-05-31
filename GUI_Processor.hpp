@@ -25,6 +25,8 @@ public:
 
 	bool drawLine(HDC _hdc, Point::Point & _first, Point::Point & _second);
 
+	static void printWinner( HWND _hwnd, std::string const & _name );
+
 /***************************************************************************/
 
 private:

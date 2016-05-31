@@ -129,6 +129,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			winner = s_pGame->getWinner();
 
+			if ( !winner.empty())
+			{
+				s_pProcessor->printWinner( hWnd, winner);
+				break;
+			}
 			first = second = nullptr;
 		}
 

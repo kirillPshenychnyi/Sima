@@ -37,6 +37,7 @@ Player::processPoint(const Point::Point & _point) const
 	return false;
 }
 
+
 /***************************************************************************/
 
 void 

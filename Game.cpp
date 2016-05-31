@@ -18,7 +18,7 @@ Game::Game(const std::string & _first, const std::string & _second)
 void 
 Game::addPoint(const Point::Point & _point)
 {
-	m_first->addPoint(_point) /*: m_second->addPoint( _point )*/;
+	m_step ? m_first->addPoint(_point) : m_second->addPoint( _point );
 	
 	m_step = m_step ? false : true;
 
@@ -31,10 +31,10 @@ std::string
 Game::getWinner() const
 {
 	if ( m_first->isTriangle() )
-		return m_first->getName();
+		return m_second->getName();
 	
 	else if ( m_second->isTriangle() )
-		return m_second->getName();
+		return m_first->getName();
 
 	else 
 		return "";
