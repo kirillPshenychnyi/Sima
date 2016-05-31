@@ -2,13 +2,23 @@
 #define __POINT_HPP__
 
 #include "PointStatus.hpp"
-#include <unordered_set>
+#include <vector>
 
 namespace Point
 {
 
 class Point
 {
+
+/***************************************************************************/
+
+public:
+
+/***************************************************************************/
+
+	typedef std::vector< const Point * >::const_iterator PointIterator;
+
+	struct Connections;
 
 /***************************************************************************/
 
@@ -32,6 +42,8 @@ public:
 
 	bool hasConnection( const Point & _point ) const;
 
+	Connections getConnections() const;
+
 /***************************************************************************/
 
 private:
@@ -44,11 +56,42 @@ private:
 
 	const int m_y;
 
-	std::unordered_set < const Point * > m_connections;
+	std::vector < const Point * > m_connections;
 
 /***************************************************************************/
 
 };
+
+/***************************************************************************/
+
+struct Point::Connections
+{
+	Connections( Point::PointIterator _begin, Point::PointIterator _end )
+		:	m_begin( _begin )
+		,	m_end( _end )
+	{}
+
+	Point::PointIterator begin() const
+	{
+		return m_begin;
+	}
+
+	Point::PointIterator end() const
+	{
+		return m_end;
+	}
+
+	Point::PointIterator m_begin, m_end;
+	
+};
+
+/***************************************************************************/
+
+inline Point::Connections
+Point::getConnections() const
+{
+	return Connections( m_connections.begin(), m_connections.end() );
+}
 
 /***************************************************************************/
 
@@ -83,13 +126,7 @@ Point::setStatus(PointStatus _status)
 
 /***************************************************************************/
 
-inline bool
-Point::hasConnection(const Point & _point) const
-{
-	return m_connections.find(&_point) != m_connections.end();
-}
-
-/***************************************************************************/
 } // namespace Point
+
 
 #endif // __POINT_HPP__

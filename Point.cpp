@@ -1,4 +1,5 @@
 #include "Point.hpp"
+#include <algorithm>
 
 /***************************************************************************/
 namespace Point
@@ -23,9 +24,21 @@ Point::operator==( const Point & _point ) const
 void
 Point::addConnection(const Point & _point)
 {
-	m_connections.insert( & _point);
+	m_connections.push_back( & _point);
 }
 
+/***************************************************************************/
+
+bool
+Point::hasConnection(const Point & _point) const
+{
+	auto predicat = [&_point](const Point * _other)
+	{
+		return _point == *_other;
+	};
+
+	return std::find_if(m_connections.begin(), m_connections.end(), predicat) != m_connections.end();
+}
 
 /***************************************************************************/
 
