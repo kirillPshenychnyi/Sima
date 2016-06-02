@@ -29,7 +29,12 @@ GUIProcessor::drawPoints( HDC _hdc, Field::Points _points ) const
 		if (pointIt.getStatus() == Point::PointStatus::Filled)
 			SelectObject( _hdc, m_brush);
 		Ellipse(_hdc, pointIt.getX(), pointIt.getY(), pointIt.getX() + Globals::diameter, pointIt.getY() + Globals::diameter);
-		
+		char buf[20];
+
+		TextOut(_hdc, pointIt.getX() + 20, pointIt.getY(), buf, wsprintf(buf, "%d", pointIt.getX()) );
+
+		TextOut(_hdc, pointIt.getX() + 20, pointIt.getY() + 15, buf, wsprintf(buf, "%d", pointIt.getY()));
+
 		SelectObject(_hdc, GetStockObject(NULL_BRUSH));
 	}
 }
@@ -37,9 +42,7 @@ GUIProcessor::drawPoints( HDC _hdc, Field::Points _points ) const
 bool 
 GUIProcessor::drawLine(HDC _hdc, Point::Point & _first, Point::Point & _second)
 {
-	if (_first == _second
-		|| _first.hasConnection( _second )
-		|| _second.hasConnection( _first ) )
+	if (_first == _second )
 	{
 		_first.setStatus(Point::PointStatus::Empty);
 		_second.setStatus(Point::PointStatus::Empty);
@@ -48,8 +51,6 @@ GUIProcessor::drawLine(HDC _hdc, Point::Point & _first, Point::Point & _second)
 	}
 
 	m_step ? SelectObject(_hdc, m_first) : SelectObject(_hdc, m_second);
-
-	_first.addConnection( _second);
 
 	m_step = m_step ? false : true;
 

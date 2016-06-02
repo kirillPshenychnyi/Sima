@@ -19,12 +19,10 @@ Game::Game(const std::string & _first, const std::string & _second)
 
 
 void 
-Game::addPoint(const Point::Point & _point)
+Game::addPoints( const Point::Point & _first, const Point::Point & _second )
 {
-	m_step ? m_first->addPoint(_point) : m_second->addPoint( _point );
+	/*m_step ?*/ m_first->addPoints( _first, _second ) /*: m_second->addPoints( _first, _second)*/;
 	
-	m_step = m_step ? false : true;
-
 }
 
 

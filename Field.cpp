@@ -31,13 +31,13 @@ Field::addPoint()
 
 	Point::Point newPoint(x, y);
 
-	for (auto point : m_points)
+	/*for (auto point : m_points)
 	{
 		double dis = distance(point, newPoint);
 
 		if ( dis < 10.0 )
 			addPoint();
-	}
+	}*/
 	m_points.push_back(newPoint);
 }
 

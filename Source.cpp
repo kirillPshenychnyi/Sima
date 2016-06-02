@@ -134,8 +134,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			bool connected = s_pProcessor->drawLine(hdc, *first, *second);
 		
-			if ( connected )
-				s_pGame->addPoint( * first);
+			if (connected)
+			{
+				s_pGame->addPoints(*first, *second);
+
+				s_pGame->onStep();
+			}
 
 			winner = s_pGame->getWinner();
 
@@ -211,3 +215,4 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 	return 0;
 }
+

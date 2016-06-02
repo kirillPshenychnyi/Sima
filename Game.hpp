@@ -30,13 +30,15 @@ public:
 
 /***************************************************************************/
 
-	void addPoint(const Point::Point & _point);
+	void addPoints( const Point::Point & _first, const Point::Point & _second );
 
 	Field & getField() const;
 
 	std::string getWinner();
 
 	bool isOver() const;
+
+	void onStep();
 
 /***************************************************************************/
 
@@ -72,6 +74,13 @@ inline bool
 Game::isOver() const
 {
 	return m_isOver;
+}
+
+inline void
+Game::onStep()
+{
+	m_step = m_step ? false : true;
+
 }
 
 /***************************************************************************/

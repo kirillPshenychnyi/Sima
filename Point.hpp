@@ -16,12 +16,6 @@ public:
 
 /***************************************************************************/
 
-	typedef std::vector< const Point * >::const_iterator PointIterator;
-
-	struct Connections;
-
-/***************************************************************************/
-
 public:
 
 /***************************************************************************/
@@ -38,14 +32,6 @@ public:
 
 	void setStatus(PointStatus _status); 
 
-	void addConnection( const Point & _point );
-
-	bool hasConnection( const Point & _point ) const;
-
-	Connections getConnections() const;
-
-	int connectionsSize() const;
-
 /***************************************************************************/
 
 private:
@@ -58,47 +44,9 @@ private:
 
 	const int m_y;
 
-	std::vector < const Point * > m_connections;
-
 /***************************************************************************/
 
 };
-
-/***************************************************************************/
-
-struct Point::Connections
-{
-	Connections( Point::PointIterator _begin, Point::PointIterator _end )
-		:	m_begin( _begin )
-		,	m_end( _end )
-	{}
-
-	Point::PointIterator begin() const
-	{
-		return m_begin;
-	}
-
-	Point::PointIterator end() const
-	{
-		return m_end;
-	}
-
-	Point::PointIterator m_begin, m_end;
-	
-};
-
-/***************************************************************************/
-
-inline Point::Connections
-Point::getConnections() const
-{
-	return Connections( m_connections.begin(), m_connections.end() );
-}
-
-inline int Point::connectionsSize() const
-{
-	return m_connections.size();
-}
 
 /***************************************************************************/
 
@@ -130,6 +78,22 @@ Point::setStatus(PointStatus _status)
 	m_status = _status;
 }
 
+struct Hasher
+{
+	size_t hash(int _value) const
+	{
+		_value = ((_value >> 16) ^ _value) * 0x45d9f3b;
+		_value = ((_value >> 16) ^ _value) * 0x45d9f3b;
+		_value = ((_value >> 16) ^ _value);
+		return _value;
+	}
+
+	size_t operator() (const Point & _point) const
+	{
+		return hash(_point.getX()) + hash(_point.getY());
+	}
+
+}; 
 
 /***************************************************************************/
 

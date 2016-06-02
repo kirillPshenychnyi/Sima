@@ -11,6 +11,7 @@ Point::Point( int _x, int _y ):
 	,	m_status( PointStatus::Empty )
 {}
 
+
 /***************************************************************************/
 
 bool 
@@ -21,25 +22,5 @@ Point::operator==( const Point & _point ) const
 
 /***************************************************************************/
 
-void
-Point::addConnection(const Point & _point)
-{
-	m_connections.push_back( & _point);
-}
-
-/***************************************************************************/
-
-bool
-Point::hasConnection(const Point & _point) const
-{
-	auto predicat = [&_point](const Point * _other)
-	{
-		return _point == *_other;
-	};
-
-	return std::find_if(m_connections.begin(), m_connections.end(), predicat) != m_connections.end();
-}
-
-/***************************************************************************/
 
 } // namespace Point

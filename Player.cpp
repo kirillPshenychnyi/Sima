@@ -13,11 +13,11 @@ Player::Player(const std::string _name)
 bool 
 Player::isTriangle() const
 {
-	if (m_points.size() < 3)
+	if (m_points.size() < 2)
 		return false;
 
 	for (auto const & point : m_points)
-		if ( processPoint(point) )
+		if (processPoint(point))
 			return true;
 
 	return false;
@@ -27,11 +27,11 @@ Player::isTriangle() const
 /***************************************************************************/
 
 bool 
-Player::processPoint(const Point::Point & _point) const
+Player::processPoint(const pointConnections & _point) const
 {
-	for ( auto f_connections : _point.getConnections() )
-		for (auto s_connection : f_connections->getConnections())
-			if ( _point.hasConnection(*  s_connection) || s_connection->hasConnection( _point) )
+	for ( auto & f_connections : _point.second )
+		for (auto & s_connection : m_points.find( f_connections )->second )
+			if( areConnected( s_connection, _point.first ) || areConnected( _point.first, s_connection ) )
 				return true;
 
 	return false;
@@ -41,9 +41,25 @@ Player::processPoint(const Point::Point & _point) const
 /***************************************************************************/
 
 void 
-Player::addPoint( const Point::Point & _point )
+Player::addPoints( const Point::Point & _first, const Point::Point _second )
 {
-	m_points.push_back( _point );
+	if (!hasPoint(_first))
+		m_points.insert( std::make_pair ( _first, connections() ) );
+
+	m_points[_first].insert(_second);
+
+	m_points.insert(std::make_pair(_second, connections()));
+
+}
+
+/***************************************************************************/
+
+bool 
+Player::areConnected (const Point::Point & _first, const Point::Point & _second ) const 
+{
+	const auto & connections = m_points.find(_first);
+
+	return connections->second.find( _second) != connections->second.end();
 }
 
 
