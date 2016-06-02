@@ -1,8 +1,6 @@
 #include <windows.h>         // подключение библиотеки с функциями API
 #include <cassert>
-#include "Game.hpp"
-#include "GUI_Processor.hpp"
-#include "Point.hpp"
+#include "commonInfo.hpp"
 #include "resource.h"
 
 // Глобальные переменные:
@@ -101,18 +99,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	PAINTSTRUCT ps;
-	HDC hdc;
-	static std::unique_ptr < Game > s_pGame;
-	static std::unique_ptr < GUIProcessor > s_pProcessor = std::make_unique< GUIProcessor >();
-
-	static int x, y;
-
-	static  Point::Point * first = nullptr;
-	static  Point::Point * second = nullptr;
-	static  Point::Point * temp = nullptr;
-	std::string winner;
-	static int click = 0;
+	static CommonInfo s_commonInfo;
 
 	switch (message)
 	{
@@ -122,65 +109,65 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 /***************************************************************************/
 
 	case WM_PAINT:  // Перерисовать окно
-		hdc = BeginPaint(hWnd, &ps);	// Начать графический вывод
+		s_commonInfo.m_hdc = BeginPaint(hWnd, &s_commonInfo.m_ps);	// Начать графический вывод
 		
-		if (!s_pGame)
+		if (!s_commonInfo.m_pGame)
 			break;
 		
-		if (s_pGame->isOver())
+		if (s_commonInfo.m_pGame->isOver())
 			break;
 
-		if ( first && second)
+		if (s_commonInfo.m_first && s_commonInfo.m_second)
 		{
-			bool connected = s_pProcessor->drawLine(hdc, *first, *second);
+			bool connected = s_commonInfo.m_pProcessor->drawLine(s_commonInfo.m_hdc, * s_commonInfo.m_first, * s_commonInfo.m_second);
 		
 			if (connected)
 			{
-				s_pGame->addPoints(*first, *second);
+				s_commonInfo.m_pGame->addPoints( * s_commonInfo.m_first, *s_commonInfo.m_second);
 
-				s_pGame->onStep();
+				s_commonInfo.m_pGame->onStep();
 			}
 
-			winner = s_pGame->getWinner();
+			s_commonInfo.m_winner = s_commonInfo.m_pGame->getWinner();
 
-			if ( !winner.empty())
-				s_pProcessor->printWinner( hWnd, winner);
+			if ( !s_commonInfo.m_winner.empty())
+				s_commonInfo.m_pProcessor->printWinner( hWnd, s_commonInfo.m_winner);
 			
-			first = second = nullptr;
+			s_commonInfo.m_first = s_commonInfo.m_second = nullptr;
 		}
 
-		s_pProcessor->drawPoints( hdc, s_pGame->getField().getPoints() );
+		s_commonInfo.m_pProcessor->drawPoints(s_commonInfo.m_hdc, s_commonInfo.m_pGame->getField().getPoints() );
 
-		EndPaint(hWnd, &ps);	// Закончить графический вывод
+		EndPaint(hWnd, &s_commonInfo.m_ps);	// Закончить графический вывод
 		break;
 
 /***************************************************************************/
 
 	case WM_LBUTTONDOWN:
 
-		if (!s_pGame)
+		if (!s_commonInfo.m_pGame)
 			break;
 
-		x = LOWORD(lParam);
+		s_commonInfo.m_x = LOWORD(lParam);
 
-		y = HIWORD(lParam);
+		s_commonInfo.m_y = HIWORD(lParam);
 
-		temp = s_pGame->getField().onClicked( x, y );
+		s_commonInfo.m_temp = s_commonInfo.m_pGame->getField().onClicked(s_commonInfo.m_x, s_commonInfo.m_y );
 
-		if (!click && temp)
+		if (!s_commonInfo.m_click && s_commonInfo.m_temp)
 		{
-			first = temp;
+			s_commonInfo.m_first = s_commonInfo.m_temp;
 
-			click++;
+			s_commonInfo.m_click++;
 
 			InvalidateRect(hWnd, NULL, FALSE);
 		}
 
-		else if ( click && temp )
+		else if (s_commonInfo.m_click && s_commonInfo.m_temp )
 		{
-			second = temp;
+			s_commonInfo.m_second = s_commonInfo.m_temp;
 			
-			click = 0;
+			s_commonInfo.m_click = 0;
 
 			InvalidateRect(hWnd, NULL, FALSE);
 
@@ -194,9 +181,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		switch (LOWORD(wParam))
 		{
 		case ID_GAME_NEWGAME:
-			if (s_pGame)
-				s_pGame.reset();
-			s_pGame = std::make_unique<Game>( "John", "Jack" ); // создаём новую игру 
+			if (s_commonInfo.m_pGame)
+				s_commonInfo.m_pGame.reset();
+			s_commonInfo.m_pGame = std::make_unique<Game>( "John", "Jack" ); // создаём новую игру 
 			InvalidateRect(hWnd, NULL, TRUE); // перерисовывем рабочую область 
 			break;
 		default:
