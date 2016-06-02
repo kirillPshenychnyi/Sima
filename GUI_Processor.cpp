@@ -29,12 +29,7 @@ GUIProcessor::drawPoints( HDC _hdc, Field::Points _points ) const
 		if (pointIt.getStatus() == Point::PointStatus::Filled)
 			SelectObject( _hdc, m_brush);
 		Ellipse(_hdc, pointIt.getX(), pointIt.getY(), pointIt.getX() + Globals::diameter, pointIt.getY() + Globals::diameter);
-		char buf[20];
-
-		TextOut(_hdc, pointIt.getX() + 20, pointIt.getY(), buf, wsprintf(buf, "%d", pointIt.getX()) );
-
-		TextOut(_hdc, pointIt.getX() + 20, pointIt.getY() + 15, buf, wsprintf(buf, "%d", pointIt.getY()));
-
+		
 		SelectObject(_hdc, GetStockObject(NULL_BRUSH));
 	}
 }
