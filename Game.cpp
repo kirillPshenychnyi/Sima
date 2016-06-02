@@ -21,7 +21,7 @@ Game::Game(const std::string & _first, const std::string & _second)
 void 
 Game::addPoints( const Point::Point & _first, const Point::Point & _second )
 {
-	/*m_step ?*/ m_first->addPoints( _first, _second ) /*: m_second->addPoints( _first, _second)*/;
+	m_step ? m_first->addPoints( _first, _second ) : m_second->addPoints( _first, _second);
 	
 }
 
