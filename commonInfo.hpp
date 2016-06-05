@@ -30,7 +30,7 @@ struct CommonInfo
 	Point::Point * m_temp;
 	std::string m_winner;
 	int m_click;
-
+	std::string m_firstName, m_secondName;
 };
 
 #endif // !__COMMON_INFO__HPP__

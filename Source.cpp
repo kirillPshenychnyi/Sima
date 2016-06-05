@@ -7,6 +7,8 @@
 HINSTANCE hInst; 	// Указатель приложения
 LPCTSTR szWindowClass = "QWERTY";
 LPCTSTR szTitle = "Sima";
+int g_nCmdShow;
+static CommonInfo g_globalnfo;
 
 // Предварительное описание функций
 
@@ -68,6 +70,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
 	HWND hWnd;
+	g_nCmdShow = nCmdShow;
 
 	hInst = hInstance; // сохраняет указатель приложения в переменной hInst
 	HMENU menu = LoadMenu(hInst, MAKEINTRESOURCE(IDR_MENU1));
@@ -93,14 +96,62 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	return TRUE;				//Успешное завершение функции
 }
 
+BOOL CALLBACK getNameDlg(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam) 
+{
+	static char name[30], name2[30];
+	switch (iMsg) 
+	{
+		case WM_INITDIALOG:   
+			return TRUE;
+
+		case WM_COMMAND:   
+			switch (LOWORD(wParam)) 
+			{ 
+				case IDC_EDIT2:
+					if (HIWORD(wParam) == EN_UPDATE)
+						GetWindowText(HWND(lParam), name, 30);
+					break;
+
+				case IDC_EDIT3:
+					if (HIWORD(wParam) == EN_UPDATE)
+						GetWindowText(HWND(lParam), name2, 30);
+					break;
+
+				case IDOK:   
+					EndDialog(hDlg, 0);
+
+					if (!strlen(name) || !strlen(name2))
+					{
+						MessageBox(hDlg, "All fields should be filled", "Input error", MB_OK);
+						break;
+					}
+					
+					g_globalnfo.m_firstName = name;
+					g_globalnfo.m_secondName = name2;
+
+					return TRUE;
+
+				case IDCANCEL:
+					EndDialog(hDlg, 0);
+					return TRUE; 
+			}   
+
+			break;
+
+		default:
+			break;
+	}  
+	
+	return FALSE;
+}
+
 //  FUNCTION: WndProc(HWND, unsigned, WORD, LONG)
 //  Оконная процедура. Принимает и обрабатывает все сообщения, приходящие в приложение
 
 
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	static CommonInfo s_commonInfo;
-
 	switch (message)
 	{
 	case WM_CREATE: // Сообщение приходит при создании окна
@@ -109,65 +160,65 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 /***************************************************************************/
 
 	case WM_PAINT:  // Перерисовать окно
-		s_commonInfo.m_hdc = BeginPaint(hWnd, &s_commonInfo.m_ps);	// Начать графический вывод
+		g_globalnfo.m_hdc = BeginPaint(hWnd, &g_globalnfo.m_ps);	// Начать графический вывод
 		
-		if (!s_commonInfo.m_pGame)
+		if (!g_globalnfo.m_pGame)
 			break;
 		
-		if (s_commonInfo.m_pGame->isOver())
+		if (g_globalnfo.m_pGame->isOver())
 			break;
 
-		if (s_commonInfo.m_first && s_commonInfo.m_second)
+		if (g_globalnfo.m_first && g_globalnfo.m_second)
 		{
-			bool connected = s_commonInfo.m_pProcessor->drawLine(s_commonInfo.m_hdc, * s_commonInfo.m_first, * s_commonInfo.m_second);
+			bool connected = g_globalnfo.m_pProcessor->drawLine(g_globalnfo.m_hdc, * g_globalnfo.m_first, * g_globalnfo.m_second);
 		
 			if (connected)
 			{
-				s_commonInfo.m_pGame->addPoints( * s_commonInfo.m_first, *s_commonInfo.m_second);
+				g_globalnfo.m_pGame->addPoints( * g_globalnfo.m_first, *g_globalnfo.m_second);
 
-				s_commonInfo.m_pGame->onStep();
+				g_globalnfo.m_pGame->onStep();
 			}
 
-			s_commonInfo.m_winner = s_commonInfo.m_pGame->getWinner();
+			g_globalnfo.m_winner = g_globalnfo.m_pGame->getWinner();
 
-			if ( !s_commonInfo.m_winner.empty())
-				s_commonInfo.m_pProcessor->printWinner( hWnd, s_commonInfo.m_winner);
+			if ( !g_globalnfo.m_winner.empty())
+				g_globalnfo.m_pProcessor->printWinner( hWnd, g_globalnfo.m_winner);
 			
-			s_commonInfo.m_first = s_commonInfo.m_second = nullptr;
+			g_globalnfo.m_first = g_globalnfo.m_second = nullptr;
 		}
 
-		s_commonInfo.m_pProcessor->drawPoints(s_commonInfo.m_hdc, s_commonInfo.m_pGame->getField().getPoints() );
+		g_globalnfo.m_pProcessor->drawPoints(g_globalnfo.m_hdc, g_globalnfo.m_pGame->getField().getPoints() );
 
-		EndPaint(hWnd, &s_commonInfo.m_ps);	// Закончить графический вывод
+		EndPaint(hWnd, &g_globalnfo.m_ps);	// Закончить графический вывод
 		break;
 
 /***************************************************************************/
 
 	case WM_LBUTTONDOWN:
 
-		if (!s_commonInfo.m_pGame)
+		if (!g_globalnfo.m_pGame)
 			break;
 
-		s_commonInfo.m_x = LOWORD(lParam);
+		g_globalnfo.m_x = LOWORD(lParam);
 
-		s_commonInfo.m_y = HIWORD(lParam);
+		g_globalnfo.m_y = HIWORD(lParam);
 
-		s_commonInfo.m_temp = s_commonInfo.m_pGame->getField().onClicked(s_commonInfo.m_x, s_commonInfo.m_y );
+		g_globalnfo.m_temp = g_globalnfo.m_pGame->getField().onClicked(g_globalnfo.m_x, g_globalnfo.m_y );
 
-		if (!s_commonInfo.m_click && s_commonInfo.m_temp)
+		if (!g_globalnfo.m_click && g_globalnfo.m_temp)
 		{
-			s_commonInfo.m_first = s_commonInfo.m_temp;
+			g_globalnfo.m_first = g_globalnfo.m_temp;
 
-			s_commonInfo.m_click++;
+			g_globalnfo.m_click++;
 
 			InvalidateRect(hWnd, NULL, FALSE);
 		}
 
-		else if (s_commonInfo.m_click && s_commonInfo.m_temp )
+		else if (g_globalnfo.m_click && g_globalnfo.m_temp )
 		{
-			s_commonInfo.m_second = s_commonInfo.m_temp;
+			g_globalnfo.m_second = g_globalnfo.m_temp;
 			
-			s_commonInfo.m_click = 0;
+			g_globalnfo.m_click = 0;
 
 			InvalidateRect(hWnd, NULL, FALSE);
 
@@ -181,9 +232,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		switch (LOWORD(wParam))
 		{
 		case ID_GAME_NEWGAME:
-			if (s_commonInfo.m_pGame)
-				s_commonInfo.m_pGame.reset();
-			s_commonInfo.m_pGame = std::make_unique<Game>( "John", "Jack" ); // создаём новую игру 
+			if (g_globalnfo.m_pGame)
+				g_globalnfo.m_pGame.reset();
+			
+			DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, getNameDlg);
+	
+			if (g_globalnfo.m_firstName.empty() || g_globalnfo.m_secondName.empty())
+				break;
+
+			g_globalnfo.m_pGame = std::make_unique<Game>( g_globalnfo.m_firstName, g_globalnfo.m_secondName ); // создаём новую игру 
 			InvalidateRect(hWnd, NULL, TRUE); // перерисовывем рабочую область 
 			break;
 		default:
