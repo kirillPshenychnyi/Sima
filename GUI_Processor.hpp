@@ -3,6 +3,7 @@
 
 #include <windows.h>
 #include "Field.hpp"
+#include "Player.hpp"
 
 class GUIProcessor
 {
@@ -27,6 +28,16 @@ public:
 
 	static void printWinner( HWND _hwnd, std::string const & _name );
 
+	void printTriangle(HDC _hdc, const Player::triangle & _triangle) const;
+
+/***************************************************************************/
+
+private:
+
+/***************************************************************************/
+
+	void connectPoints(HDC _hdc, const Point::Point & _first, const Point::Point & _second) const;
+
 /***************************************************************************/
 
 private:
@@ -36,6 +47,8 @@ private:
 	HPEN m_first;
 
 	HPEN m_second;
+
+	HPEN m_triangle;
 
 	HBRUSH m_brush;
 

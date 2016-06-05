@@ -34,6 +34,8 @@ public:
 
 	Field & getField() const;
 
+	const Player::triangle & getTriangle() const;
+
 	std::string getWinner();
 
 	bool isOver() const;
@@ -51,6 +53,8 @@ private:
 	std::unique_ptr < Player > m_second;
 
 	std::unique_ptr< Field > m_field;
+
+	std::string m_winner;
 
 	bool m_step;
 

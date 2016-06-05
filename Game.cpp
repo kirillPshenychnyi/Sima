@@ -30,19 +30,27 @@ Game::addPoints( const Point::Point & _first, const Point::Point & _second )
 
 std::string 
 Game::getWinner()
-{
-	std::string winner = "";
-
+{	
 	if (m_first->isTriangle())
-		winner = m_second->getName();
+		m_winner = m_second->getName();
 
-	else if ( m_second->isTriangle() )
-		winner = m_first->getName();
-	
-	if ( !winner.empty() )
+	else if (m_second->isTriangle())
+		m_winner = m_first->getName();
+		
+	if ( !m_winner.empty() )
 		m_isOver = true;
 
-	return winner;
+	return m_winner;
+}
+
+/***************************************************************************/
+
+const Player::triangle & 
+Game::getTriangle() const
+{
+	return m_winner == m_first->getName() ?
+		m_second->getTriangle()
+		: m_first->getTriangle();
 }
 
 /***************************************************************************/

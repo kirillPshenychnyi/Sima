@@ -4,6 +4,7 @@
 /***************************************************************************/
 
 #include "Point.hpp"
+#include <windows.h>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -15,6 +16,12 @@ class Player
 	typedef std::unordered_set< Point::Point, Point::Hasher > connections;
 
 	typedef std::pair< Point::Point, connections > pointConnections;
+
+public:
+
+/***************************************************************************/
+
+	typedef std::vector< Point::Point > triangle;
 
 /***************************************************************************/
 
@@ -28,7 +35,7 @@ public:
 
 	Player & operator = (const Player &) = delete;
 
-	bool isTriangle() const;
+	bool isTriangle();
 
 	void addPoints( const Point::Point & _point, const Point::Point _second );
 
@@ -38,9 +45,11 @@ public:
 
 	bool areConnected( const Point::Point & _first, const Point::Point & _second ) const;
 
+	const triangle & getTriangle() const;
+	
 /***************************************************************************/
 
-	bool processPoint(const pointConnections & _point) const;
+	bool processPoint(const pointConnections & _point) ;
 
 /***************************************************************************/
 
@@ -51,6 +60,8 @@ private:
 	const std::string m_name;
 
 	std::unordered_map< Point::Point, connections, Point::Hasher > m_points;
+
+	triangle m_triangle;
 
 /***************************************************************************/
 
@@ -70,7 +81,15 @@ Player::hasPoint(const Point::Point & _point) const
 	return m_points.find(_point) != m_points.end();
 }
 
+/***************************************************************************/
+
+inline const Player::triangle &
+Player::getTriangle() const
+{
+	return m_triangle;
+}
 
 /***************************************************************************/
+
 
 #endif // !__Player_HPP__

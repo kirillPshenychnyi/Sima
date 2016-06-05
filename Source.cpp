@@ -181,9 +181,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			g_globalnfo.m_winner = g_globalnfo.m_pGame->getWinner();
 
-			if ( !g_globalnfo.m_winner.empty())
-				g_globalnfo.m_pProcessor->printWinner( hWnd, g_globalnfo.m_winner);
-			
+			if (!g_globalnfo.m_winner.empty())
+			{
+				g_globalnfo.m_pProcessor->printWinner(hWnd, g_globalnfo.m_winner);
+
+				g_globalnfo.m_pProcessor->printTriangle(g_globalnfo.m_hdc, g_globalnfo.m_pGame->getTriangle() );
+
+			}
 			g_globalnfo.m_first = g_globalnfo.m_second = nullptr;
 		}
 
